@@ -4,80 +4,41 @@ import ro.pub.cs.systems.eim.practicaltest02.general.Constants;
 
 public class WeatherForecastInformation {
 
-    private String temperature;
-    private String windSpeed;
-    private String condition;
-    private String pressure;
-    private String humidity;
+    private String val;
+    private int minute;
 
     public WeatherForecastInformation() {
-        this.temperature = null;
-        this.windSpeed = null;
-        this.condition = null;
-        this.pressure = null;
-        this.humidity = null;
+        this.val = null;
+        this.minute = -1;
     }
 
     public WeatherForecastInformation(
-            String temperature,
-            String windSpeed,
-            String condition,
-            String pressure,
-            String humidity) {
-        this.temperature = temperature;
-        this.windSpeed = windSpeed;
-        this.condition = condition;
-        this.pressure = pressure;
-        this.humidity = humidity;
+            String val,
+            int minute) {
+        this.val = val;
+        this.minute = minute;
     }
 
-    public void setTemperature(String temperature) {
-        this.temperature = temperature;
+    public void setVal(String val) {
+        this.val = val;
     }
 
-    public String getTemperature() {
-        return temperature;
+    public String getVal() {
+        return this.val;
     }
 
-    public void setWindSpeed(String windSpeed) {
-        this.windSpeed = windSpeed;
+    public void setMinute(int minute) {
+        this.minute = minute;
     }
 
-    public String getWindSpeed() {
-        return windSpeed;
+    public int getMinute() {
+        return this.minute;
     }
 
-    public void setCondition(String condition) {
-        this.condition = condition;
-    }
-
-    public String getCondition() {
-        return condition;
-    }
-
-    public void setPressure(String pressure) {
-        this.pressure = pressure;
-    }
-
-    public String getPressure() {
-        return pressure;
-    }
-
-    public void setHumidity(String humidity) {
-        this.humidity = humidity;
-    }
-
-    public String getHumidity() {
-        return humidity;
-    }
 
     @Override
     public String toString() {
-        return Constants.TEMPERATURE + ": " + temperature + "\n\r" +
-                Constants.WIND_SPEED + ": " + windSpeed + "\n\r" +
-                Constants.CONDITION + ": " + condition + "\n\r" +
-                Constants.PRESSURE + ": " + pressure + "\n\r" +
-                Constants.HUMIDITY + ": " + humidity;
+        return this.val + "\n";
     }
 
 }

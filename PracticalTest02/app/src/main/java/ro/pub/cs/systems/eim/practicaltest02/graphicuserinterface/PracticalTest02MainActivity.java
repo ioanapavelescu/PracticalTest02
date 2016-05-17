@@ -82,7 +82,57 @@ public class PracticalTest02MainActivity extends AppCompatActivity {
             }
 
             String city = cityEditText.getText().toString();
-            String informationType = informationTypeSpinner.getSelectedItem().toString();
+            String city2 = cityEditText2.getText().toString();
+            String informationType = "put";
+            if (city == null || city.isEmpty() ||
+                    informationType == null || informationType.isEmpty()) {
+                Toast.makeText(
+                        getApplicationContext(),
+                        "Parameters from client (city / information type) should be filled!",
+                        Toast.LENGTH_SHORT
+                ).show();
+                return;
+            }
+
+            weatherForecastTextView.setText("ceva");
+
+
+            clientThread = new ClientThread(
+                    clientAddress,
+                    Integer.parseInt(clientPort),
+                    city,
+                    city2,
+                    informationType,
+                    weatherForecastTextView);
+            clientThread.start();
+        }
+    }
+
+    private GetWeatherForecastButtonClickListener2 getWeatherForecastButtonClickListener2 = new GetWeatherForecastButtonClickListener2();
+    private class GetWeatherForecastButtonClickListener2 implements Button.OnClickListener {
+
+        @Override
+        public void onClick(View view) {
+            String clientAddress = clientAddressEditText.getText().toString();
+            String clientPort    = clientPortEditText.getText().toString();
+            if (clientAddress == null || clientAddress.isEmpty() ||
+                    clientPort == null || clientPort.isEmpty()) {
+                Toast.makeText(
+                        getApplicationContext(),
+                        "Client connection parameters should be filled!",
+                        Toast.LENGTH_SHORT
+                ).show();
+                return;
+            }
+
+            if (serverThread == null || !serverThread.isAlive()) {
+                Log.e(Constants.TAG, "[MAIN ACTIVITY] There is no server to connect to!");
+                return;
+            }
+            //Log.e(Constants.TAG, "[MAIN ACTIVITY] here");
+            String city = cityEditText.getText().toString();
+            String city2 = cityEditText2.getText().toString();
+            String informationType = "get";
             if (city == null || city.isEmpty() ||
                     informationType == null || informationType.isEmpty()) {
                 Toast.makeText(
@@ -95,15 +145,18 @@ public class PracticalTest02MainActivity extends AppCompatActivity {
 
             weatherForecastTextView.setText(Constants.EMPTY_STRING);
 
+
             clientThread = new ClientThread(
                     clientAddress,
                     Integer.parseInt(clientPort),
                     city,
+                    city2,
                     informationType,
                     weatherForecastTextView);
             clientThread.start();
         }
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,12 +170,13 @@ public class PracticalTest02MainActivity extends AppCompatActivity {
         clientAddressEditText = (EditText)findViewById(R.id.client_address_edit_text);
         clientPortEditText = (EditText)findViewById(R.id.client_port_edit_text);
         cityEditText = (EditText)findViewById(R.id.city_edit_text);
+        cityEditText2 = (EditText)findViewById(R.id.city_edit_text2);
         //informationTypeSpinner = (Spinner)findViewById(R.id.information_type_spinner);
         getWeatherForecastButton = (Button)findViewById(R.id.get_weather_forecast_button);
         getWeatherForecastButton.setOnClickListener(getWeatherForecastButtonClickListener);
 
         getWeatherForecastButton2 = (Button)findViewById(R.id.get_weather_forecast_button2);
-        getWeatherForecastButton2.setOnClickListener(getWeatherForecastButtonClickListener);
+        getWeatherForecastButton2.setOnClickListener(getWeatherForecastButtonClickListener2);
 
         weatherForecastTextView = (TextView)findViewById(R.id.weather_forecast_text_view);
     }

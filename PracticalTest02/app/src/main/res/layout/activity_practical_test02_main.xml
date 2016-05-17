@@ -147,16 +147,13 @@
 
     </GridLayout>
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
         <TextView
             android:id="@+id/weather_forecast_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:singleLine="false"
-            android:maxLines="10" />
+            android:maxLines="10"
+            android:text="@string/server"/>
 
-    </ScrollView>
 </LinearLayout>

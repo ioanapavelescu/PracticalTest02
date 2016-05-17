@@ -20,9 +20,11 @@ import org.jsoup.select.Elements;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.Socket;
-import java.util.ArrayList;
+import java.net.*;
+import java.text.*;
+import java.util.*;
 import java.util.HashMap;
 import java.util.List;
 
@@ -46,12 +48,76 @@ public class CommunicationThread extends Thread {
             try {
                 BufferedReader bufferedReader = Utilities.getReader(socket);
                 PrintWriter printWriter = Utilities.getWriter(socket);
+
                 if (bufferedReader != null && printWriter != null) {
+
                     Log.i(Constants.TAG, "[COMMUNICATION THREAD] Waiting for parameters from client (city / information type)!");
                     String city = bufferedReader.readLine();
+                    String city2 = bufferedReader.readLine();
                     String informationType = bufferedReader.readLine();
-                    HashMap<String, WeatherForecastInformation> data = serverThread.getData();
-                    WeatherForecastInformation weatherForecastInformation = null;
+                    Log.i(Constants.TAG, informationType);
+                    if (informationType.equals("put")) {
+                        WeatherForecastInformation weatherForecastInformation = new WeatherForecastInformation();
+
+
+                       /* HttpURLConnection conn = null;
+
+                        try {
+                            URL url = new URL("http://www.timeapi.org/utc/now");
+                            URLConnection con = url.openConnection();
+                            InputStreamReader streamReader = new InputStreamReader(con.getInputStream());
+                            BufferedReader br = new BufferedReader(streamReader);
+                            StringBuilder sb = new StringBuilder();
+                            String line = null;
+                            line = br.readLine();
+                            Log.e(Constants.TAG,"aaaa " + line);
+
+                        } catch (IOException ioException) {
+                            //Log.e(Constants.TAG, "[COMMUNICATION THREAD] An exception has occurred: " + ioException.getMessage());
+                        }*/
+                        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+                        Log.e(Constants.TAG, timeStamp.substring(11, 13));
+                           /* HttpClient httpClient = new DefaultHttpClient();
+                            HttpPost httpPost = new HttpPost("http://www.timeapi.org/utc/now");
+                            List<NameValuePair> params = new ArrayList<>();
+                            params.add(new BasicNameValuePair(Constants.QUERY_ATTRIBUTE, city));
+                            UrlEncodedFormEntity urlEncodedFormEntity = new UrlEncodedFormEntity(params, HTTP.UTF_8);
+                            httpPost.setEntity(urlEncodedFormEntity);
+                            ResponseHandler<String> responseHandler = new BasicResponseHandler();
+                            String pageSourceCode = httpClient.execute(httpPost, responseHandler);
+                            Log.e(Constants.TAG, "just me " + pageSourceCode);
+                            if (pageSourceCode != null) {
+                                Document document = Jsoup.parse(pageSourceCode);
+                                Element element = document.child(0);
+                                Elements scripts = element.getElementsByTag(Constants.SCRIPT_TAG);*/
+
+
+
+                        weatherForecastInformation.setVal(city2);
+                        weatherForecastInformation.setMinute((int)timeStamp.charAt(11) * 10 + (int)timeStamp.charAt(12)  );
+                        serverThread.getData().put(city, weatherForecastInformation);
+                    }
+                   else {
+                        HashMap<String, WeatherForecastInformation> data = serverThread.getData();
+                        String result;
+                        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+                        Log.e(Constants.TAG, timeStamp.substring(11, 13));
+
+                       if (data.get(city) !=  null)
+                       {
+                           if ((int)timeStamp.charAt(11) * 10 + (int)timeStamp.charAt(12) != data.get(city).getMinute())
+                               result = "none\n";
+                           //Log.i(Constants.TAG, "[COMMUNICATION THREAD] return get info!");
+                           else
+                           result = data.get(city).toString();
+                       }
+                        else
+                            result = "none\n";
+
+                        printWriter.println(result);
+                        printWriter.flush();
+                    }
+                    /*WeatherForecastInformation weatherForecastInformation = null;
                     if (city != null && !city.isEmpty() && informationType != null && !informationType.isEmpty()) {
                         if (data.containsKey(city)) {
                             Log.i(Constants.TAG, "[COMMUNICATION THREAD] Getting the information from the cache...");
@@ -132,16 +198,13 @@ public class CommunicationThread extends Thread {
                 } else {
                     Log.e(Constants.TAG, "[COMMUNICATION THREAD] BufferedReader / PrintWriter are null!");
                 }
+                */
                 socket.close();
+                }
             } catch (IOException ioException) {
                 Log.e(Constants.TAG, "[COMMUNICATION THREAD] An exception has occurred: " + ioException.getMessage());
                 if (Constants.DEBUG) {
                     ioException.printStackTrace();
-                }
-            } catch (JSONException jsonException) {
-                Log.e(Constants.TAG, "[COMMUNICATION THREAD] An exception has occurred: " + jsonException.getMessage());
-                if (Constants.DEBUG) {
-                    jsonException.printStackTrace();
                 }
             }
         } else {

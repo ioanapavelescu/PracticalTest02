@@ -16,6 +16,7 @@ public class ClientThread extends Thread {
     private String address;
     private int port;
     private String city;
+    private String city2;
     private String informationType;
     private TextView weatherForecastTextView;
 
@@ -25,11 +26,13 @@ public class ClientThread extends Thread {
             String address,
             int port,
             String city,
+            String city2,
             String informationType,
             TextView weatherForecastTextView) {
         this.address = address;
         this.port = port;
         this.city = city;
+        this.city2 = city2;
         this.informationType = informationType;
         this.weatherForecastTextView = weatherForecastTextView;
     }
@@ -46,16 +49,23 @@ public class ClientThread extends Thread {
             PrintWriter printWriter = Utilities.getWriter(socket);
             if (bufferedReader != null && printWriter != null) {
                 printWriter.println(city);
+                Log.i(Constants.TAG, city);
+                printWriter.flush();
+                printWriter.println(city2);
+                Log.i(Constants.TAG, city2);
                 printWriter.flush();
                 printWriter.println(informationType);
+                Log.i(Constants.TAG, informationType);
                 printWriter.flush();
                 String weatherInformation;
                 while ((weatherInformation = bufferedReader.readLine()) != null) {
                     final String finalizedWeatherInformation = weatherInformation;
+                    Log.e(Constants.TAG, "inform primita :"  + finalizedWeatherInformation);
                     weatherForecastTextView.post(new Runnable() {
                         @Override
                         public void run() {
                             weatherForecastTextView.append(finalizedWeatherInformation + "\n");
+                            Log.e(Constants.TAG, "inform primita :"  + finalizedWeatherInformation);
                         }
                     });
                 }
